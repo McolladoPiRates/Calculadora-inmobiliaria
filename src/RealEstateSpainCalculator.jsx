@@ -11,13 +11,14 @@
 // - Corregido JSX (todos los <tr> cerrados) y bloque de tests en try/catch.
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Card, CardContent } from "./components/ui/card";
+import { CardContent } from "./components/ui/card";
+import { RoundedCard } from "./components/ui/rounded-card";
 import { Button } from "./components/ui/button";
 import { Switch } from "./components/ui/switch";
-import { Input } from "./components/ui/input";
+import { RoundedInput } from "./components/ui/rounded-input";
 import { Label } from "./components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./components/ui/select";
-import { Badge } from "./components/ui/badge";
+import { PillBadge } from "./components/ui/pill-badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip";
 import { ResponsiveContainer, Legend, Area, ComposedChart, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip } from "recharts";
 import { Info, Lock, TrendingUp, X as Close } from "lucide-react";
@@ -46,9 +47,11 @@ const isNum = (n) => Number.isFinite(n) && !isNaN(n);
 
 function NumberField({ id, value, onNumberChange, placeholder, className, inputRef, error, disabled, onUserEdit }) {
   const [text, setText] = useState(formatForInput(value));
-  useEffect(() => { setText(formatForInput(value)); }, [value]);
+  useEffect(() => {
+    setText(formatForInput(value));
+  }, [value]);
   return (
-    <Input
+    <RoundedInput
       id={id}
       aria-invalid={!!error}
       ref={inputRef}
@@ -407,13 +410,13 @@ export default function RealEstateSpainCalculator() {
             </div>
           </div>
           <div className="hidden md:flex items-center gap-2">
-            <Badge className="rounded-full py-1 px-3" variant="secondary">versión 1.7</Badge>
+            <PillBadge className="py-1 px-3">versión 1.7</PillBadge>
           </div>
         </header>
 
         {/* Bloque 1: Compra */}
         <div className="space-y-4">
-          <Card className="rounded-2xl shadow-sm">
+          <RoundedCard>
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="font-medium">Compra del Inmueble</h3>
@@ -463,13 +466,13 @@ export default function RealEstateSpainCalculator() {
   {/* Línea de impuestos (debajo, sin superponerse) */}
   <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-600">
     {newOrUsed === 'segunda_mano' ? (
-      <Badge variant="secondary" className="rounded-full">
+      <PillBadge>
         {`ITP ${pct(itp)}`}
-      </Badge>
+      </PillBadge>
     ) : (
-      <Badge variant="secondary" className="rounded-full">
+      <PillBadge>
         {`IVA 10% + AJD ${pct(ajd)}`}
-      </Badge>
+      </PillBadge>
     )}
   </div>
 </div>
@@ -478,38 +481,38 @@ export default function RealEstateSpainCalculator() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label className="text-xs" htmlFor="price">Precio vivienda (€)</Label>
-                  <NumberField id="price" value={price} onNumberChange={setPrice} placeholder="Ej.: 250000" className="rounded-xl" inputRef={refPrice} error={!!errPurchase && !isNum(price)} />
+                  <NumberField id="price" value={price} onNumberChange={setPrice} placeholder="Ej.: 250000" inputRef={refPrice} error={!!errPurchase && !isNum(price)} />
                 </div>
                 <div>
                   <Label className="text-xs" htmlFor="downPct">Entrada (%)</Label>
-                  <NumberField id="downPct" value={downPct} onNumberChange={setDownPct} placeholder="Ej.: 20" className="rounded-xl" inputRef={refDown} error={!!errPurchase && !isNum(downPct)} />
+                  <NumberField id="downPct" value={downPct} onNumberChange={setDownPct} placeholder="Ej.: 20" inputRef={refDown} error={!!errPurchase && !isNum(downPct)} />
                 </div>
                 <div>
                   <Label className="text-xs" htmlFor="rate">Tipo de interés (%)</Label>
-                  <NumberField id="rate" value={mortgageRate} onNumberChange={setMortgageRate} placeholder="Ej.: 3,2" className="rounded-xl" inputRef={refRate} error={!!errPurchase && !isNum(mortgageRate)} />
+                  <NumberField id="rate" value={mortgageRate} onNumberChange={setMortgageRate} placeholder="Ej.: 3,2" inputRef={refRate} error={!!errPurchase && !isNum(mortgageRate)} />
                 </div>
                 <div>
                   <Label className="text-xs" htmlFor="yearsMortgage">Años hipoteca</Label>
-                  <NumberField id="yearsMortgage" value={mortgageYears} onNumberChange={setMortgageYears} placeholder="Ej.: 25" className="rounded-xl" inputRef={refYears} error={!!errPurchase && !isNum(mortgageYears)} />
+                  <NumberField id="yearsMortgage" value={mortgageYears} onNumberChange={setMortgageYears} placeholder="Ej.: 25" inputRef={refYears} error={!!errPurchase && !isNum(mortgageYears)} />
                 </div>
                 <div className="col-span-2">
                   <Label className="text-xs" htmlFor="reform">Gastos de reforma (€)</Label>
-                  <NumberField id="reform" value={reformCost} onNumberChange={setReformCost} placeholder="Ej.: 15000" className="rounded-xl" />
+                  <NumberField id="reform" value={reformCost} onNumberChange={setReformCost} placeholder="Ej.: 15000" />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3 items-end">
                 <div>
                   <Label className="text-xs flex items-center gap-1" htmlFor="itp">ITP (%) {useOfficial && <Lock className="w-3 h-3"/>}</Label>
-                  <NumberField id="itp" value={useOfficial? itp : itpUser} onNumberChange={setItpUser} placeholder="Ej.: 6" className="rounded-xl" disabled={useOfficial} />
+                  <NumberField id="itp" value={useOfficial? itp : itpUser} onNumberChange={setItpUser} placeholder="Ej.: 6" disabled={useOfficial} />
                 </div>
                 <div>
                   <Label className="text-xs flex items-center gap-1" htmlFor="ajd">AJD (%) {useOfficial && <Lock className="w-3 h-3"/>}</Label>
-                  <NumberField id="ajd" value={useOfficial? ajd : ajdUser} onNumberChange={setAjdUser} placeholder="Ej.: 1" className="rounded-xl" disabled={useOfficial} />
+                  <NumberField id="ajd" value={useOfficial? ajd : ajdUser} onNumberChange={setAjdUser} placeholder="Ej.: 1" disabled={useOfficial} />
                 </div>
                 <div>
                   <Label className="text-xs" htmlFor="otherClosing">Otros gastos (€)</Label>
-                  <NumberField id="otherClosing" value={otherClosing} onNumberChange={setOtherClosing} placeholder="Ej.: 500" className="rounded-xl" />
+                  <NumberField id="otherClosing" value={otherClosing} onNumberChange={setOtherClosing} placeholder="Ej.: 500" />
                 </div>
               </div>
 
@@ -523,24 +526,24 @@ export default function RealEstateSpainCalculator() {
                 </div>
                 <div>
                   <Label className="text-xs" htmlFor="notary">Notaría (€)</Label>
-                  <NumberField id="notary" value={autoClosing? autoEst.notary : notary} onNumberChange={setNotary} className="rounded-xl" disabled={autoClosing} />
+                  <NumberField id="notary" value={autoClosing? autoEst.notary : notary} onNumberChange={setNotary} disabled={autoClosing} />
                 </div>
                 <div>
                   <Label className="text-xs" htmlFor="registry">Registro (€)</Label>
-                  <NumberField id="registry" value={autoClosing? autoEst.registry : registry} onNumberChange={setRegistry} className="rounded-xl" disabled={autoClosing} />
+                  <NumberField id="registry" value={autoClosing? autoEst.registry : registry} onNumberChange={setRegistry} disabled={autoClosing} />
                 </div>
                 <div>
                   <Label className="text-xs" htmlFor="gestoria">Gestoría (€)</Label>
-                  <NumberField id="gestoria" value={autoClosing? autoEst.gestoria : gestoria} onNumberChange={setGestoria} className="rounded-xl" disabled={autoClosing} />
+                  <NumberField id="gestoria" value={autoClosing? autoEst.gestoria : gestoria} onNumberChange={setGestoria} disabled={autoClosing} />
                 </div>
                 <div>
                   <Label className="text-xs" htmlFor="appraisal">Tasación (€)</Label>
-                  <NumberField id="appraisal" value={appraisal} onNumberChange={setAppraisal} placeholder={`Sugerido: ${String(Math.round(Math.max(250, Math.min(600, 200 + safe(price)*0.001))))}` } className="rounded-xl" />
+                  <NumberField id="appraisal" value={appraisal} onNumberChange={setAppraisal} placeholder={`Sugerido: ${String(Math.round(Math.max(250, Math.min(600, 200 + safe(price)*0.001))))}` } />
                   <div className="text-[11px] text-neutral-500 mt-1">Sugerido: {currency(Math.round(Math.max(250, Math.min(600, 200 + safe(price)*0.001))))}</div>
                 </div>
                 <div>
                   <Label className="text-xs" htmlFor="agency">Comisión de agencia (€)</Label>
-                  <NumberField id="agency" value={agencyCommission} onNumberChange={setAgencyCommission} className="rounded-xl" />
+                  <NumberField id="agency" value={agencyCommission} onNumberChange={setAgencyCommission} />
                 </div>
               </div>
 
@@ -549,84 +552,84 @@ export default function RealEstateSpainCalculator() {
                 <Button variant="primary" onClick={onCalcPurchase} className="rounded-xl w-full   !">Calcular</Button>
               </div>
             </CardContent>
-          </Card>
+          </RoundedCard>
 
           {calcPurchase && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-neutral-800 text-neutral-800 !text-neutral-800">
-              <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Desembolso inicial (incl. reforma)</div><div className="text-2xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{currency(cashInvested)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 text-neutral-800 !text-neutral-800">Entrada: {currency(entryCash)} · Impuestos: {currency(itpCost + ivaCost + ajdCost)} · Gastos compraventa: {currency((autoClosing? (autoEst.notary+autoEst.registry+autoEst.gestoria) : (safe(notary)+safe(registry)+safe(gestoria))) + safe(appraisal) + safe(agencyCommission) + safe(otherClosing))} · Reforma: {currency(safe(reformCost))}</div></CardContent></Card>
-              <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Cuota hipoteca (mensual)</div><div className="text-2xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{currency(monthlyPayment)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 text-neutral-800 !text-neutral-800">Principal + intereses</div></CardContent></Card>
-              <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Coste total de la vivienda</div><div className="text-2xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{currency(totalCostOfHome)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 text-neutral-800 !text-neutral-800">Precio + adquisición + reforma + intereses</div></CardContent></Card>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-neutral-800 !text-neutral-800">
+              <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Desembolso inicial (incl. reforma)</div><div className="text-2xl font-semibold text-neutral-800 !text-neutral-800">{currency(cashInvested)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 !text-neutral-800">Entrada: {currency(entryCash)} · Impuestos: {currency(itpCost + ivaCost + ajdCost)} · Gastos compraventa: {currency((autoClosing? (autoEst.notary+autoEst.registry+autoEst.gestoria) : (safe(notary)+safe(registry)+safe(gestoria))) + safe(appraisal) + safe(agencyCommission) + safe(otherClosing))} · Reforma: {currency(safe(reformCost))}</div></CardContent></RoundedCard>
+              <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Cuota hipoteca (mensual)</div><div className="text-2xl font-semibold text-neutral-800 !text-neutral-800">{currency(monthlyPayment)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 !text-neutral-800">Principal + intereses</div></CardContent></RoundedCard>
+              <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Coste total de la vivienda</div><div className="text-2xl font-semibold text-neutral-800 !text-neutral-800">{currency(totalCostOfHome)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 !text-neutral-800">Precio + adquisición + reforma + intereses</div></CardContent></RoundedCard>
             </div>
           )}
         </div>
 
         {/* Bloque 2: Alquiler y costes */}
-        <div className="space-y-4 mt-6 text-neutral-800 text-neutral-800 !text-neutral-800">
-          <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800">
-            <CardContent className="p-4 space-y-3 text-neutral-800 text-neutral-800 !text-neutral-800">
-              <div className="flex items-center justify-between text-neutral-800 text-neutral-800 !text-neutral-800">
-                <h3 className="font-medium text-neutral-800 text-neutral-800 !text-neutral-800">Alquiler y costes</h3>
+        <div className="space-y-4 mt-6 text-neutral-800 !text-neutral-800">
+          <RoundedCard className="text-neutral-800 !text-neutral-800">
+            <CardContent className="p-4 space-y-3 text-neutral-800 !text-neutral-800">
+              <div className="flex items-center justify-between text-neutral-800 !text-neutral-800">
+                <h3 className="font-medium text-neutral-800 !text-neutral-800">Alquiler y costes</h3>
               </div>
-              <div className="grid grid-cols-2 gap-3 text-neutral-800 text-neutral-800 !text-neutral-800">
+              <div className="grid grid-cols-2 gap-3 text-neutral-800 !text-neutral-800">
                 <div>
-                  <Label className="text-xs text-neutral-800 text-neutral-800 !text-neutral-800" htmlFor="rent">Alquiler mensual inicial (€)</Label>
-                  <NumberField id="rent" value={rent} onNumberChange={setRent} placeholder="Ej.: 1200" className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800" inputRef={refRent} error={!!errRent && !isNum(rent)} />
+                  <Label className="text-xs text-neutral-800 !text-neutral-800" htmlFor="rent">Alquiler mensual inicial (€)</Label>
+                  <NumberField id="rent" value={rent} onNumberChange={setRent} placeholder="Ej.: 1200" className="text-neutral-800 !text-neutral-800" inputRef={refRent} error={!!errRent && !isNum(rent)} />
                 </div>
                 <div>
-                  <Label className="text-xs text-neutral-800 text-neutral-800 !text-neutral-800" htmlFor="rentGrowth">Subida anual del alquiler (%)</Label>
-                  <NumberField id="rentGrowth" value={rentGrowth} onNumberChange={setRentGrowth} placeholder="2" className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800" />
+                  <Label className="text-xs text-neutral-800 !text-neutral-800" htmlFor="rentGrowth">Subida anual del alquiler (%)</Label>
+                  <NumberField id="rentGrowth" value={rentGrowth} onNumberChange={setRentGrowth} placeholder="2" className="text-neutral-800 !text-neutral-800" />
                 </div>
                 <div>
-                  <Label className="text-xs text-neutral-800 text-neutral-800 !text-neutral-800" htmlFor="projYears">Años de proyección</Label>
-                  <NumberField id="projYears" value={years} onNumberChange={setYears} placeholder="10" className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800" inputRef={refProjYears} error={!!errRent && !isNum(years)} />
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-3 text-neutral-800 text-neutral-800 !text-neutral-800">
-                <div>
-                  <Label className="text-xs text-neutral-800 text-neutral-800 !text-neutral-800" htmlFor="ibi">IBI anual (€)</Label>
-                  <NumberField id="ibi" value={ibi} onNumberChange={setIbi} className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800" onUserEdit={()=>setIbiTouched(true)} />
-                </div>
-                <div>
-                  <Label className="text-xs text-neutral-800 text-neutral-800 !text-neutral-800" htmlFor="comunidad">Comunidad (€)</Label>
-                  <NumberField id="comunidad" value={comunidadGastos} onNumberChange={setComunidadGastos} className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800" onUserEdit={()=>setComuTouched(true)} />
-                </div>
-                <div>
-                  <Label className="text-xs text-neutral-800 text-neutral-800 !text-neutral-800" htmlFor="seguro">Seguro hogar (€)</Label>
-                  <NumberField id="seguro" value={seguro} onNumberChange={setSeguro} className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800" onUserEdit={()=>setSeguroTouched(true)} />
-                </div>
-                <div>
-                  <Label className="text-xs text-neutral-800 text-neutral-800 !text-neutral-800" htmlFor="life">Seguro de vida (€/año)</Label>
-                  <NumberField id="life" value={lifeInsurance} onNumberChange={setLifeInsurance} className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800" onUserEdit={()=>setVidaTouched(true)} />
-                </div>
-                <div>
-                  <Label className="text-xs text-neutral-800 text-neutral-800 !text-neutral-800" htmlFor="unpaid">Seguro de impago (€/año)</Label>
-                  <NumberField id="unpaid" value={unpaidInsurance} onNumberChange={setUnpaidInsurance} className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800" onUserEdit={()=>setImpagoTouched(true)} />
-                </div>
-                <div>
-                  <Label className="text-xs text-neutral-800 text-neutral-800 !text-neutral-800" htmlFor="misc">Gastos varios (€/año)</Label>
-                  <NumberField id="misc" value={miscExpenses} onNumberChange={setMiscExpenses} className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800" />
+                  <Label className="text-xs text-neutral-800 !text-neutral-800" htmlFor="projYears">Años de proyección</Label>
+                  <NumberField id="projYears" value={years} onNumberChange={setYears} placeholder="10" className="text-neutral-800 !text-neutral-800" inputRef={refProjYears} error={!!errRent && !isNum(years)} />
                 </div>
               </div>
-              <div className="grid grid-cols-1 pt-2 gap-2 text-neutral-800 text-neutral-800 !text-neutral-800">
-                {errRent && <div className="text-rose-600 text-sm text-neutral-800 text-neutral-800 !text-neutral-800">{errRent}</div>}
+              <div className="grid grid-cols-3 gap-3 text-neutral-800 !text-neutral-800">
+                <div>
+                  <Label className="text-xs text-neutral-800 !text-neutral-800" htmlFor="ibi">IBI anual (€)</Label>
+                  <NumberField id="ibi" value={ibi} onNumberChange={setIbi} className="text-neutral-800 !text-neutral-800" onUserEdit={()=>setIbiTouched(true)} />
+                </div>
+                <div>
+                  <Label className="text-xs text-neutral-800 !text-neutral-800" htmlFor="comunidad">Comunidad (€)</Label>
+                  <NumberField id="comunidad" value={comunidadGastos} onNumberChange={setComunidadGastos} className="text-neutral-800 !text-neutral-800" onUserEdit={()=>setComuTouched(true)} />
+                </div>
+                <div>
+                  <Label className="text-xs text-neutral-800 !text-neutral-800" htmlFor="seguro">Seguro hogar (€)</Label>
+                  <NumberField id="seguro" value={seguro} onNumberChange={setSeguro} className="text-neutral-800 !text-neutral-800" onUserEdit={()=>setSeguroTouched(true)} />
+                </div>
+                <div>
+                  <Label className="text-xs text-neutral-800 !text-neutral-800" htmlFor="life">Seguro de vida (€/año)</Label>
+                  <NumberField id="life" value={lifeInsurance} onNumberChange={setLifeInsurance} className="text-neutral-800 !text-neutral-800" onUserEdit={()=>setVidaTouched(true)} />
+                </div>
+                <div>
+                  <Label className="text-xs text-neutral-800 !text-neutral-800" htmlFor="unpaid">Seguro de impago (€/año)</Label>
+                  <NumberField id="unpaid" value={unpaidInsurance} onNumberChange={setUnpaidInsurance} className="text-neutral-800 !text-neutral-800" onUserEdit={()=>setImpagoTouched(true)} />
+                </div>
+                <div>
+                  <Label className="text-xs text-neutral-800 !text-neutral-800" htmlFor="misc">Gastos varios (€/año)</Label>
+                  <NumberField id="misc" value={miscExpenses} onNumberChange={setMiscExpenses} className="text-neutral-800 !text-neutral-800" />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 pt-2 gap-2 text-neutral-800 !text-neutral-800">
+                {errRent && <div className="text-rose-600 text-sm text-neutral-800 !text-neutral-800">{errRent}</div>}
                 <Button variant="primary" onClick={onCalcRent} className="rounded-xl w-full   !">Calcular</Button>
               </div>
             </CardContent>
-          </Card>
+          </RoundedCard>
 
           {calcRent && (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-neutral-800 text-neutral-800 !text-neutral-800">
-                <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Ingresos primer año</div><div className="text-2xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{currency(safe(rent)*12)}</div></CardContent></Card>
-                <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Gastos primer año</div><div className="text-2xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{currency(projection[0]?.expenses || 0)}</div></CardContent></Card>
-                <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Rentabilidad año 1</div><div className="text-2xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{pct(((projection[0]?.net || 0) / Math.max(1, cashInvested))*100)}</div></CardContent></Card>
-                <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Rentabilidad media (10 años)</div><div className="text-2xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{pct(avgNetYield10Y)}</div></CardContent></Card>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-neutral-800 !text-neutral-800">
+                <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Ingresos primer año</div><div className="text-2xl font-semibold text-neutral-800 !text-neutral-800">{currency(safe(rent)*12)}</div></CardContent></RoundedCard>
+                <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Gastos primer año</div><div className="text-2xl font-semibold text-neutral-800 !text-neutral-800">{currency(projection[0]?.expenses || 0)}</div></CardContent></RoundedCard>
+                <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Rentabilidad año 1</div><div className="text-2xl font-semibold text-neutral-800 !text-neutral-800">{pct(((projection[0]?.net || 0) / Math.max(1, cashInvested))*100)}</div></CardContent></RoundedCard>
+                <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Rentabilidad media (10 años)</div><div className="text-2xl font-semibold text-neutral-800 !text-neutral-800">{pct(avgNetYield10Y)}</div></CardContent></RoundedCard>
               </div>
 
-              <div className="pt-2 text-neutral-800 text-neutral-800 !text-neutral-800">
+              <div className="pt-2 text-neutral-800 !text-neutral-800">
                 {/* Botón con degradado y halo animado */}
-                <div className="relative group text-neutral-800 text-neutral-800 !text-neutral-800">
-                  <div className="absolute -inset-0.5 rounded-2xl bg-[linear-gradient(90deg,rgba(255,186,120,0.7)_0%,rgba(255,255,255,0.9)_50%,rgba(203,213,255,0.7)_100%)] blur-sm opacity-80 group-hover:opacity-100 transition-opacity duration-300 animate-pulse text-neutral-800 text-neutral-800 !text-neutral-800" aria-hidden />
+                <div className="relative group text-neutral-800 !text-neutral-800">
+                  <div className="absolute -inset-0.5 rounded-2xl bg-[linear-gradient(90deg,rgba(255,186,120,0.7)_0%,rgba(255,255,255,0.9)_50%,rgba(203,213,255,0.7)_100%)] blur-sm opacity-80 group-hover:opacity-100 transition-opacity duration-300 animate-pulse text-neutral-800 !text-neutral-800" aria-hidden />
                   <Button variant="gradient" onClick={openAnalysis} className="relative rounded-2xl w-full h-12 text-base bg-gradient-to-r from-amber-200 via-white to-indigo-200 hover:from-amber-300 hover:to-indigo-300 border border-white/70 shadow uppercase font-semibold tracking-wide">
                     ANÁLISIS DE LA OPERACIÓN
                   </Button>
@@ -635,13 +638,13 @@ export default function RealEstateSpainCalculator() {
 
               {analysisDone && (
                 <>
-                  <div className="space-y-3 pt-2 text-neutral-800 text-neutral-800 !text-neutral-800">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-neutral-800 text-neutral-800 !text-neutral-800">
-                      <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Precio máximo compra + reforma recomendado</div><div className="text-2xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{currency(recommendedMaxPrice)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 text-neutral-800 !text-neutral-800">Objetivo de {Math.round(targetGrossYield*1000)/10}% bruto sobre renta actual</div></CardContent></Card>
-                      <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Alquiler recomendado</div><div className="text-2xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{currency(recommendedRent)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 text-neutral-800 !text-neutral-800">Para alcanzar ~{Math.round(targetGrossYield*1000)/10}% bruto con el coste pagado</div></CardContent></Card>
-                      <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Nota de la operación</div><div className={`text-2xl font-semibold ${grade.color}`}>{grade.label}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 text-neutral-800 !text-neutral-800">Basada en la rentabilidad neta del año 1 ({pct(yieldY1)})</div></CardContent></Card>
+                  <div className="space-y-3 pt-2 text-neutral-800 !text-neutral-800">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-neutral-800 !text-neutral-800">
+                      <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Precio máximo compra + reforma recomendado</div><div className="text-2xl font-semibold text-neutral-800 !text-neutral-800">{currency(recommendedMaxPrice)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 !text-neutral-800">Objetivo de {Math.round(targetGrossYield*1000)/10}% bruto sobre renta actual</div></CardContent></RoundedCard>
+                      <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Alquiler recomendado</div><div className="text-2xl font-semibold text-neutral-800 !text-neutral-800">{currency(recommendedRent)}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 !text-neutral-800">Para alcanzar ~{Math.round(targetGrossYield*1000)/10}% bruto con el coste pagado</div></CardContent></RoundedCard>
+                      <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Nota de la operación</div><div className={`text-2xl font-semibold ${grade.color}`}>{grade.label}</div><div className="text-[11px] text-neutral-500 mt-1 text-neutral-800 !text-neutral-800">Basada en la rentabilidad neta del año 1 ({pct(yieldY1)})</div></CardContent></RoundedCard>
                     </div>
-                    <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-sm text-neutral-700 text-neutral-800 text-neutral-800 !text-neutral-800">
+                    <RoundedCard className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-sm text-neutral-700 text-neutral-800 !text-neutral-800">
                       {isNaN(yieldY1) ? "Introduce datos para evaluar la operación." : (
                         grade.label === "Muy buena" ? "La operación presenta una rentabilidad neta sobresaliente en el primer año, con holgura para absorber variaciones de gastos o vacíos."
                         : grade.label === "Buena" ? "La operación es sólida: buen equilibrio entre desembolso y flujo neto. Puede mejorar negociando precio o ajustando el alquiler."
@@ -649,29 +652,29 @@ export default function RealEstateSpainCalculator() {
                         : grade.label === "Mala" ? "Rentabilidad ajustada: recomendable renegociar precio, revisar financiación o considerar mejoras de valor antes de ejecutar."
                         : "Rentabilidad insuficiente: alto riesgo de bajo retorno. Replantea precio objetivo o condiciones de alquiler/financiación."
                       )}
-                    </CardContent></Card>
+                    </CardContent></RoundedCard>
                   </div>
 
                   {/* Gráfico de flujos */}
-                  <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800">
-                    <CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800">
-                      <div className="flex items-center justify-between mb-3 text-neutral-800 text-neutral-800 !text-neutral-800">
+                  <RoundedCard className="text-neutral-800 !text-neutral-800">
+                    <CardContent className="p-4 text-neutral-800 !text-neutral-800">
+                      <div className="flex items-center justify-between mb-3 text-neutral-800 !text-neutral-800">
                         <div>
-                          <div className="text-sm font-medium flex items-center gap-2 text-neutral-800 text-neutral-800 !text-neutral-800"><TrendingUp className="w-4 h-4 text-neutral-800 text-neutral-800 !text-neutral-800"/> Proyección de flujos</div>
-                          <div className="text-xs text-neutral-500 text-neutral-800 text-neutral-800 !text-neutral-800">Neto anual (post-IRPF) y componentes</div>
+                          <div className="text-sm font-medium flex items-center gap-2 text-neutral-800 !text-neutral-800"><TrendingUp className="w-4 h-4 text-neutral-800 !text-neutral-800"/> Proyección de flujos</div>
+                          <div className="text-xs text-neutral-500 text-neutral-800 !text-neutral-800">Neto anual (post-IRPF) y componentes</div>
                         </div>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Badge variant="secondary" className="rounded-full cursor-help text-neutral-800 text-neutral-800 !text-neutral-800">IRR {isNaN(irrAnnual)?"–":pct(irrAnnual)}</Badge>
+                              <PillBadge className="cursor-help text-neutral-800 !text-neutral-800">IRR {isNaN(irrAnnual)?"–":pct(irrAnnual)}</PillBadge>
                             </TooltipTrigger>
-                            <TooltipContent side="left" className="max-w-xs text-xs text-neutral-800 text-neutral-800 !text-neutral-800">
+                            <TooltipContent side="left" className="max-w-xs text-xs text-neutral-800 !text-neutral-800">
                               <p><strong>IRR</strong> (Tasa Interna de Retorno): estimación de la rentabilidad anual de la inversión teniendo en cuenta todos los flujos de caja. Incluye ingresos por alquiler, gastos e impuestos proyectados.</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <div className="h-64 text-neutral-800 text-neutral-800 !text-neutral-800">
+                      <div className="h-64 text-neutral-800 !text-neutral-800">
                         <ResponsiveContainer width="100%" height="100%">
                           <ComposedChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -686,13 +689,13 @@ export default function RealEstateSpainCalculator() {
                         </ResponsiveContainer>
                       </div>
                     </CardContent>
-                  </Card>
+                  </RoundedCard>
 
                   {/* Gráfico hipoteca */}
-                  <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800">
-                    <CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800">
-                      <div className="text-sm font-medium mb-2 text-neutral-800 text-neutral-800 !text-neutral-800">Intereses vs Principal (toda la hipoteca)</div>
-                      <div className="h-56 text-neutral-800 text-neutral-800 !text-neutral-800">
+                  <RoundedCard className="text-neutral-800 !text-neutral-800">
+                    <CardContent className="p-4 text-neutral-800 !text-neutral-800">
+                      <div className="text-sm font-medium mb-2 text-neutral-800 !text-neutral-800">Intereses vs Principal (toda la hipoteca)</div>
+                      <div className="h-56 text-neutral-800 !text-neutral-800">
                         <ResponsiveContainer width="100%" height="100%">
                           <ComposedChart data={chartBreakdownDebt} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -706,32 +709,32 @@ export default function RealEstateSpainCalculator() {
                         </ResponsiveContainer>
                       </div>
                     </CardContent>
-                  </Card>
+                  </RoundedCard>
 
                   {/* Tabla */}
-                  <Card className="rounded-2xl shadow-sm text-neutral-800 text-neutral-800 !text-neutral-800">
-                    <CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800">
-                      <div className="text-sm font-medium mb-2 text-neutral-800 text-neutral-800 !text-neutral-800">Tabla de proyección</div>
-                      <div className="overflow-auto rounded-xl border border-neutral-200 text-neutral-800 text-neutral-800 !text-neutral-800">
-                        <table className="w-full text-sm text-neutral-800 text-neutral-800 !text-neutral-800">
-                          <thead className="bg-neutral-50 text-neutral-800 text-neutral-800 !text-neutral-800">
+                  <RoundedCard className="text-neutral-800 !text-neutral-800">
+                    <CardContent className="p-4 text-neutral-800 !text-neutral-800">
+                      <div className="text-sm font-medium mb-2 text-neutral-800 !text-neutral-800">Tabla de proyección</div>
+                      <div className="overflow-auto rounded-xl border border-neutral-200 text-neutral-800 !text-neutral-800">
+                        <table className="w-full text-sm text-neutral-800 !text-neutral-800">
+                          <thead className="bg-neutral-50 text-neutral-800 !text-neutral-800">
                             <tr>
-                              <th className="text-left p-2 text-neutral-800 text-neutral-800 !text-neutral-800">Año</th>
-                              <th className="text-right p-2 text-neutral-800 text-neutral-800 !text-neutral-800">Ingresos</th>
-                              <th className="text-right p-2 text-neutral-800 text-neutral-800 !text-neutral-800">Hipoteca</th>
-                              <th className="text-right p-2 text-neutral-800 text-neutral-800 !text-neutral-800">IRPF</th>
-                              <th className="text-right p-2 text-neutral-800 text-neutral-800 !text-neutral-800">Gastos totales</th>
-                              <th className="text-right p-2 text-neutral-800 text-neutral-800 !text-neutral-800">Neto</th>
+                              <th className="text-left p-2 text-neutral-800 !text-neutral-800">Año</th>
+                              <th className="text-right p-2 text-neutral-800 !text-neutral-800">Ingresos</th>
+                              <th className="text-right p-2 text-neutral-800 !text-neutral-800">Hipoteca</th>
+                              <th className="text-right p-2 text-neutral-800 !text-neutral-800">IRPF</th>
+                              <th className="text-right p-2 text-neutral-800 !text-neutral-800">Gastos totales</th>
+                              <th className="text-right p-2 text-neutral-800 !text-neutral-800">Neto</th>
                             </tr>
                           </thead>
                           <tbody>
                             {projection.map((p) => (
-                              <tr key={p.year} className="odd:bg-white even:bg-neutral-50 text-neutral-800 text-neutral-800 !text-neutral-800">
-                                <td className="p-2 text-neutral-800 text-neutral-800 !text-neutral-800">{p.year}</td>
-                                <td className="p-2 text-right text-neutral-800 text-neutral-800 !text-neutral-800">{currency(p.rent)}</td>
-                                <td className="p-2 text-right text-neutral-800 text-neutral-800 !text-neutral-800">{currency(p.mortgage)}</td>
-                                <td className="p-2 text-right text-neutral-800 text-neutral-800 !text-neutral-800">{currency(p.irpf)}</td>
-                                <td className="p-2 text-right text-neutral-800 text-neutral-800 !text-neutral-800">{currency(p.expenses)}</td>
+                              <tr key={p.year} className="odd:bg-white even:bg-neutral-50 text-neutral-800 !text-neutral-800">
+                                <td className="p-2 text-neutral-800 !text-neutral-800">{p.year}</td>
+                                <td className="p-2 text-right text-neutral-800 !text-neutral-800">{currency(p.rent)}</td>
+                                <td className="p-2 text-right text-neutral-800 !text-neutral-800">{currency(p.mortgage)}</td>
+                                <td className="p-2 text-right text-neutral-800 !text-neutral-800">{currency(p.irpf)}</td>
+                                <td className="p-2 text-right text-neutral-800 !text-neutral-800">{currency(p.expenses)}</td>
                                 <td className={`p-2 text-right ${p.net>=0?"text-emerald-600":"text-rose-600"}`}>{currency(p.net)}</td>
                               </tr>
                             ))}
@@ -739,15 +742,15 @@ export default function RealEstateSpainCalculator() {
                         </table>
                       </div>
                     </CardContent>
-                  </Card>
+                  </RoundedCard>
                 </>
               )}
             </>
           )}
 
-          <div className="flex items-center justify-between text-[12px] text-neutral-500 mt-6 text-neutral-800 text-neutral-800 !text-neutral-800">
-            <div className="flex items-center gap-2 text-neutral-800 text-neutral-800 !text-neutral-800">
-              <Info className="w-3.5 h-3.5 text-neutral-800 text-neutral-800 !text-neutral-800"/>
+          <div className="flex items-center justify-between text-[12px] text-neutral-500 mt-6 text-neutral-800 !text-neutral-800">
+            <div className="flex items-center gap-2 text-neutral-800 !text-neutral-800">
+              <Info className="w-3.5 h-3.5 text-neutral-800 !text-neutral-800"/>
               <span>
                 Este simulador es orientativo. Los tipos ITP/AJD marcados como <strong>oficiales</strong> deben validarse con fuentes actualizadas. La sección de IRPF no constituye asesoramiento fiscal.
               </span>
@@ -755,7 +758,7 @@ export default function RealEstateSpainCalculator() {
           </div>
 
           {/* Disclaimer educativo */}
-          <div className="text-[12px] text-neutral-500 mt-3 text-neutral-800 text-neutral-800 !text-neutral-800">
+          <div className="text-[12px] text-neutral-500 mt-3 text-neutral-800 !text-neutral-800">
             <p>
               <strong>Exención de responsabilidad:</strong> Esta calculadora tiene fines exclusivamente educativos e informativos. No constituye asesoramiento financiero, fiscal o legal. Verifica siempre la normativa vigente y consulta con profesionales cualificados antes de tomar decisiones.
             </p>
@@ -765,26 +768,26 @@ export default function RealEstateSpainCalculator() {
 
       {/* Popup Análisis */}
       {showAnalysisAsk && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 text-neutral-800 text-neutral-800 !text-neutral-800">
-          <div className="w-full max-w-2xl rounded-2xl bg-white shadow-xl text-neutral-800 text-neutral-800 !text-neutral-800">
-            <div className="flex items-center justify-between p-4 border-b text-neutral-800 text-neutral-800 !text-neutral-800">
-              <h4 className="font-medium text-neutral-800 text-neutral-800 !text-neutral-800">Análisis de la operación</h4>
-              <button className="p-1 rounded hover:bg-neutral-100 text-neutral-800 text-neutral-800 !text-neutral-800" onClick={closeAnalysis}><Close className="w-5 h-5 text-neutral-800 text-neutral-800 !text-neutral-800"/></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 text-neutral-800 !text-neutral-800">
+          <div className="w-full max-w-2xl rounded-2xl bg-white shadow-xl text-neutral-800 !text-neutral-800">
+            <div className="flex items-center justify-between p-4 border-b text-neutral-800 !text-neutral-800">
+              <h4 className="font-medium text-neutral-800 !text-neutral-800">Análisis de la operación</h4>
+              <button className="p-1 rounded hover:bg-neutral-100 text-neutral-800 !text-neutral-800" onClick={closeAnalysis}><Close className="w-5 h-5 text-neutral-800 !text-neutral-800"/></button>
             </div>
-            <div className="p-4 space-y-4 text-neutral-800 text-neutral-800 !text-neutral-800">
+            <div className="p-4 space-y-4 text-neutral-800 !text-neutral-800">
               {analysisLoading ? (
-                <div className="py-10 text-center text-neutral-800 text-neutral-800 !text-neutral-800">
-                  <div className="mx-auto mb-3 h-10 w-10 border-2 border-neutral-300 border-t-transparent rounded-full animate-spin text-neutral-800 text-neutral-800 !text-neutral-800" />
-                  <div className="text-sm text-neutral-600 text-neutral-800 text-neutral-800 !text-neutral-800">Analizando cifras…</div>
+                <div className="py-10 text-center text-neutral-800 !text-neutral-800">
+                  <div className="mx-auto mb-3 h-10 w-10 border-2 border-neutral-300 border-t-transparent rounded-full animate-spin text-neutral-800 !text-neutral-800" />
+                  <div className="text-sm text-neutral-600 text-neutral-800 !text-neutral-800">Analizando cifras…</div>
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-neutral-800 text-neutral-800 !text-neutral-800">
-                    <Card className="rounded-2xl text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Precio máximo compra + reforma recomendado</div><div className="text-xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{currency(recommendedMaxPrice)}</div></CardContent></Card>
-                    <Card className="rounded-2xl text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Alquiler recomendado</div><div className="text-xl font-semibold text-neutral-800 text-neutral-800 !text-neutral-800">{currency(recommendedRent)}</div></CardContent></Card>
-                    <Card className="rounded-2xl text-neutral-800 text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 text-neutral-800 !text-neutral-800">Nota de la operación</div><div className={`text-xl font-semibold ${grade.color}`}>{grade.label}</div></CardContent></Card>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-neutral-800 !text-neutral-800">
+                    <RoundedCard shadow={false} className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Precio máximo compra + reforma recomendado</div><div className="text-xl font-semibold text-neutral-800 !text-neutral-800">{currency(recommendedMaxPrice)}</div></CardContent></RoundedCard>
+                    <RoundedCard shadow={false} className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Alquiler recomendado</div><div className="text-xl font-semibold text-neutral-800 !text-neutral-800">{currency(recommendedRent)}</div></CardContent></RoundedCard>
+                    <RoundedCard shadow={false} className="text-neutral-800 !text-neutral-800"><CardContent className="p-4 text-neutral-800 !text-neutral-800"><div className="text-xs text-neutral-500 mb-1 text-neutral-800 !text-neutral-800">Nota de la operación</div><div className={`text-xl font-semibold ${grade.color}`}>{grade.label}</div></CardContent></RoundedCard>
                   </div>
-                  <div className="text-sm text-neutral-700 text-neutral-800 text-neutral-800 !text-neutral-800">
+                  <div className="text-sm text-neutral-700 text-neutral-800 !text-neutral-800">
                     {isNaN(yieldY1) ? "Introduce datos para evaluar la operación." : (
                       grade.label === "Muy buena" ? "Operación muy por encima de umbrales habituales de mercado: margen de seguridad alto."
                       : grade.label === "Buena" ? "Parámetros sólidos. Aun así, afina precio de compra o revisa gastos para elevar retorno."
@@ -797,8 +800,8 @@ export default function RealEstateSpainCalculator() {
               )}
             </div>
             {!analysisLoading && (
-              <div className="p-4 border-t flex justify-end gap-2 text-neutral-800 text-neutral-800 !text-neutral-800">
-                <Button variant="secondary" onClick={closeAnalysis} className="rounded-xl text-neutral-800 text-neutral-800 !text-neutral-800">Cerrar</Button>
+              <div className="p-4 border-t flex justify-end gap-2 text-neutral-800 !text-neutral-800">
+                <Button variant="secondary" onClick={closeAnalysis} className="text-neutral-800 !text-neutral-800">Cerrar</Button>
               </div>
             )}
           </div>
