@@ -1,5 +1,5 @@
 import React from "react";
-export function Select({ value, onValueChange, children }) {
+export const Select = React.forwardRef(function Select({ value, onValueChange, children, className="", ...props }, ref) {
   const items = [];
   React.Children.forEach(children, child => {
     if (child && child.props && child.type && child.type.displayName==="SelectContent") {
@@ -11,7 +11,9 @@ export function Select({ value, onValueChange, children }) {
   });
   return (
     <select
-      className="w-full h-10 px-3 rounded-md border border-emerald-500 bg-white/90 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+      ref={ref}
+      {...props}
+      className={`w-full h-10 px-3 rounded-md border border-emerald-500 bg-white/90 focus:outline-none focus:ring-2 focus:ring-emerald-500 ${className}`.trim()}
       value={value||""}
       onChange={e=>onValueChange(e.target.value)}
     >
@@ -19,7 +21,7 @@ export function Select({ value, onValueChange, children }) {
       {items.map(it => <option key={it.value} value={it.value}>{it.children}</option>)}
     </select>
   );
-}
+});
 export function SelectTrigger({ children, className="", ...props }) {
   return <div className={className}>{children}</div>;
 }

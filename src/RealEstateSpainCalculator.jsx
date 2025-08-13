@@ -422,10 +422,15 @@ export default function RealEstateSpainCalculator() {
                   <Label htmlFor="official" className="text-xs">Usar datos oficiales</Label>
                 </div>
               </div>
-              <Select value={community} onValueChange={setCommunity}>
-                <SelectTrigger ref={refCommunity} className="rounded-xl border-emerald-500 focus:ring-emerald-500 focus:border-emerald-600 bg-white/90">
-                  <SelectValue placeholder="Seleccionar comunidad autónoma" />
-                </SelectTrigger>
+              <Label id="community-label" htmlFor="community-select" className="sr-only">Comunidad autónoma</Label>
+              <Select
+                id="community-select"
+                ref={refCommunity}
+                aria-labelledby="community-label"
+                className="rounded-xl border-emerald-500 focus:ring-emerald-500 focus:border-emerald-600 bg-white/90"
+                value={community}
+                onValueChange={setCommunity}
+              >
                 <SelectContent>
                   {COMMUNITIES.map(c => (<SelectItem key={c} value={c}>{c}</SelectItem>))}
                 </SelectContent>
