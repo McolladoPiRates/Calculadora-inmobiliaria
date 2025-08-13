@@ -19,6 +19,7 @@ import { Label } from "./components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./components/ui/select";
 import { Badge } from "./components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip";
+import { clampWithError } from "./numberFieldUtils.js";
 import { ResponsiveContainer, Legend, Area, ComposedChart, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip } from "recharts";
 import { Info, Lock, TrendingUp, X as Close } from "lucide-react";
 
@@ -44,31 +45,39 @@ const pct = (n) => (isNaN(n) ? "–" : `${n.toFixed(2)}%`);
 const safe = (n) => (isNaN(n) ? 0 : n);
 const isNum = (n) => Number.isFinite(n) && !isNaN(n);
 
-function NumberField({ id, value, onNumberChange, placeholder, className, inputRef, error, disabled, onUserEdit }) {
+export function NumberField({ id, value, onNumberChange, placeholder, className, inputRef, error, disabled, onUserEdit, min, max }) {
   const [text, setText] = useState(formatForInput(value));
+  const [msg, setMsg] = useState("");
   useEffect(() => { setText(formatForInput(value)); }, [value]);
   return (
-    <Input
-      id={id}
-      aria-invalid={!!error}
-      ref={inputRef}
-      inputMode="decimal"
-      placeholder={placeholder}
-      className={`${className || ""} ${error ? "border-rose-500 focus-visible:ring-rose-500" : ""}`}
-      value={text}
-      onChange={(e) => {
-        // Forzamos "." -> "," (decimal es-ES) y NO aplicamos miles.
-        const raw = e.target.value.replace(/\./g, ",");
-        setText(raw);
-        onNumberChange(toNumberES(raw));
-        onUserEdit?.();
-      }}
-      onBlur={() => {
-        const n = toNumberES(text);
-        setText(Number.isFinite(n) ? String(n).replace(".", ",") : "");
-      }}
-      disabled={disabled}
-    />
+    <div>
+      <Input
+        id={id}
+        aria-invalid={!!error || !!msg}
+        ref={inputRef}
+        inputMode="decimal"
+        placeholder={placeholder}
+        className={`${className || ""} ${(error || msg) ? "border-rose-500 focus-visible:ring-rose-500" : ""}`}
+        value={text}
+        onChange={(e) => {
+          // Forzamos "." -> "," (decimal es-ES) y NO aplicamos miles.
+          let raw = e.target.value.replace(/\./g, ",");
+          let n = toNumberES(raw);
+          const { value: clamped, err } = clampWithError(n, min, max);
+          if (err) raw = formatForInput(clamped);
+          setText(raw);
+          setMsg(err);
+          onNumberChange(clamped);
+          onUserEdit?.();
+        }}
+        onBlur={() => {
+          const n = toNumberES(text);
+          setText(Number.isFinite(n) ? String(n).replace(".", ",") : "");
+        }}
+        disabled={disabled}
+      />
+      {msg && <p className="mt-1 text-xs text-rose-600" role="alert">{msg}</p>}
+    </div>
   );
 }
 
